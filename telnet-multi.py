@@ -36,9 +36,13 @@ if __name__ == '__main__':
 		
 		if verbose is True:
 			logging.debug(' Reading %s from hosts file.' % host)
-		
-		telnet = access_method.use_telnet(host, RouterLib.username, RouterLib.password)
-		telnet_cmd = telnet[-1]
+			
+		try:
+			telnet = access_method.use_telnet(host, RouterLib.username, RouterLib.password)
+			telnet_cmd = telnet[-1]
+		except:
+			print "%s doesn't support telnet." % host
+			exit(1)
 		
 		if verbose is True:
 			logging.debug(' Establishing telnet connection to %s.' % host)
