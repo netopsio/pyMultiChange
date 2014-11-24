@@ -43,7 +43,7 @@ if __name__ == '__main__':
 		if verbose is True:
 			logging.debug(' Establishing ssh connection to %s.' % host)
 			
-		ssh_cmd.exec_command('enable\n' + RouterLib.enable + '\n')
+		#ssh_cmd.exec_command('enable\n' + RouterLib.enable + '\n')
 			
 		cmds = open(commands_file, 'r')
 		
