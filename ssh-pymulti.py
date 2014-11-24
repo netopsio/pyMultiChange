@@ -36,42 +36,43 @@ if __name__ == '__main__':
 		
 		if verbose is True:
 			logging.debug(' Reading %s from hosts file.' % host)
-		
-		telnet = access_method.use_telnet(host, RouterLib.username, RouterLib.password)
-		telnet_cmd = telnet[-1]
+			
+		ssh = access_method.use_ssh(host, RouterLib.username, RouterLib.password)
+		ssh_cmd = ssh[-1]
 		
 		if verbose is True:
-			logging.debug(' Establishing telnet connection to %s.' % host)
-		
+			logging.debug(' Establishing ssh connection to %s.' % host)
+			
+		ssh_cmd.exec_command('enable\n' + RouterLib.enable + '\n')
+			
 		cmds = open(commands_file, 'r')
 		
 		if verbose is True:
 			logging.debug(' Reading commands file.')
-		
+				
 		for command in cmds:
 			command = command.strip()
 			
 			if verbose is True:
 				logging.debug(' Reading %s from the commands file' % command)
+				
+			stdin, stdout, stderr = ssh_cmd.exec_command(command)
 			
-			telnet_cmd.write(command + '\n')
+			if verbose is True:
+				for o in stdout:
+					print o
 			
 			if verbose is True:
 				logging.debug(' Executing %s' % command)
 			
-			output = telnet_cmd.read_until('#', 2)
-			
-			#if verbose is True:
-			#	print output
-
 		if verbose is True:
 			logging.debug(' Logging out of %s.' % host)
-		
-		telnet_cmd.close()
-		
+			
+		ssh_cmd.close()
+			
 		if verbose is True:
 			logging.debug(' Closing commands file.')
-		
+			
 		cmds.close()
 
 	if verbose is True:
