@@ -33,7 +33,7 @@ optional arguments:
 
 ## ssh-multi.py
 
-The ssh-multi.py script isn't fully functional, yet. It will log into many devices and attempt to execute the commands, from a specified commands file, but it will not go into enable mode via the 'enable' command. I'm still working on that functionality. If your routers and switches automatically log you in with enable mode, then you should be good to go, however, if you must specifically use the 'enable' command, then enter your password at the prompt, then the script may not work for you.
+The ssh-multi.py script should be fully functional, though I haven't been able to thoroughly test it at scale, yet. To run the script, you have to pass id the -d flag, to specify a hosts file, and the -c flag, to specify the commands file. If you want to enable verbosity of the script, you use the -v True flag, which will enable debugging.
 
 ```
 usage: ssh-multi.py [-h] [-d HOSTS] -c COMMANDS [-v VERBOSE]
