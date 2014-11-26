@@ -108,7 +108,7 @@ if __name__ == '__main__':
 				logging.debug(' Reading %s from the commands file' % command)
 				
 			ssh_shell.send(command + "\n")
-			time.sleep(1)
+			time.sleep(2)
 			
 			o = ssh_shell.recv(1000000)
 			
