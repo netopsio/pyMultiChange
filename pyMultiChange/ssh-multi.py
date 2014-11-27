@@ -81,20 +81,13 @@ if __name__ == '__main__':
 				if verbose is True:
 					logging.debug(' Unable to enter enable mode.')
 		
-		elif '#' in o:
-			if verbose is True:
-				logging.debug(' Skipping attempt at enable mode as we already have administrative privileges.')
-				
+		else:
 			ssh_shell.send("terminal length 0\n")
 			
 			o = ssh_shell.recv(1000)
 			
 			if verbose is True:
 				logging.debug(' Setting an unlimited terminal buffer.')
-		
-		else:
-			if verbose is True:
-				logging.debug(' Something unexpected happened.')
 			
 		cmds = open(commands_file, 'r')
 		
