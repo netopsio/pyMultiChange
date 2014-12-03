@@ -63,7 +63,7 @@ if __name__ == '__main__':
 			if verbose is True:
 				logging.debug(' Executing %s' % command)
 			
-			output = telnet_cmd.read_until('#', 2)
+			output = telnet_cmd.read_until('#', 4)
 			
 			#if verbose is True:
 			#	print output
