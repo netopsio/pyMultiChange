@@ -98,7 +98,7 @@ if __name__ == '__main__':
                     if verbose is True:
                         logging.debug(' Setting an unlimited terminal buffer.')
             except:
-                logging.debug(' SKIPPING: %s doesn\'t support SSH.' % host)
+                print "SKIPPING: %s doesn't support SSH." % host
                 exit(1)
         elif protocol == 'telnet':
             if verbose is True:
@@ -109,7 +109,7 @@ if __name__ == '__main__':
                 access(method='telnet')
                 access_cmd = access_params[-1]
             except:
-                logging.debug(' SKIPPING: %s doesn\'t support Telnet.' % host)
+                print "SKIPPING: %s doesn't support Telnet." % host
                 exit(1)
         else:
             access(method='none')
