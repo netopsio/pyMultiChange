@@ -11,6 +11,7 @@ from lib.pyRouterLib import RouterLib
 import os
 import time
 import sys
+import logging
 
 access_params = ''
 
@@ -34,15 +35,14 @@ def access(method):
 
 
 def log_debug(message):
-    import logging
     if verbose is True:
         logging.basicConfig(level=logging.DEBUG)
         logging.debug(message)
 
 
 def log_error(message):
-    import logging
     logging.basicConfig(level=logging.ERROR)
+    logging.error(message)
 
 
 if __name__ == '__main__':
