@@ -71,6 +71,7 @@ class RouterLib(object):
         if self.is_nexus is True:
             self.access.read_until("#")
             self.access.write("terminal length 0\n")
+            self.access.read_until("#")
         else:
             self.access.read_until(">")
             self.access.write("enable\n")
