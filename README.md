@@ -17,7 +17,7 @@ Managing Cisco routers/switches with Python
 
 optional arguments:
   -h, --help            show this help message and exit
-  -d DEVICES, --hosts DEVICES
+  -d DEVICES, --devices DEVICES
                         Specifies a device file
   -c COMMANDS, --commands COMMANDS
                         Specifies a commands file
