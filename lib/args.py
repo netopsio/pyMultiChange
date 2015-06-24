@@ -9,7 +9,7 @@ verbose = False
 
 def default_args(hosts_file, command_file, protocol, command_output, verbose):
     parser = argparse.ArgumentParser(description='Managing Cisco routers/switches with Python')
-    parser.add_argument('-d', '--hosts', help='Specifies a host file')
+    parser.add_argument('-d', '--devices', help='Specifies a device file')
     parser.add_argument('-c', '--commands',  help='Specifies a commands file', required=True)
     parser.add_argument('-s', '--ssh', help='Default: Use the SSH protocol', nargs='?', const='ssh')
     parser.add_argument('-t', '--telnet', help='Use the Telnet protocol', nargs='?', const='telnet')
@@ -18,8 +18,8 @@ def default_args(hosts_file, command_file, protocol, command_output, verbose):
 
     args = vars(parser.parse_args())
 
-    if args['hosts']:
-        hosts_file = args['hosts']
+    if args['devices']:
+        hosts_file = args['devices']
     if args['commands']:
         command_file = args['commands']
     if args['telnet']:
