@@ -59,7 +59,7 @@ class RouterLib(object):
         self.username = username
         self.password = password
         self.access = telnetlib.Telnet(self.host)
-        login_prompt = self.access.read_until("\(Username: \)|\(login: \)", 2)
+        login_prompt = self.access.read_until("\(Username:\)|\(login:\)", 2)
         if 'login' in login_prompt:
             self.is_nexus = True
             self.access.write(username + "\n")
