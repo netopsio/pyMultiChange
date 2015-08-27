@@ -29,11 +29,10 @@ if __name__ == "__main__":
         exit(1)
 
     with open(args['hosts_file'], 'r') as hf:
-        ssh_message = " Attempting to log into %s via SSH." % host
-        telnet_message = " Attempting to log into %s via Telnet." % host
-
         for host in hf:
             host = host.strip()
+            ssh_message = " Attempting to log into %s via SSH." % host
+            telnet_message = " Attempting to log into %s via Telnet." % host
             log_debug(message=' Reading %s from the host file.' % host)
             if args['protocol'] == 'ssh':
                 try:
