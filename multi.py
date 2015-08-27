@@ -1,37 +1,13 @@
 #!/usr/bin/env python
 
 from lib.args import default_args
-from lib.args import hosts_file
-from lib.args import command_file
-from lib.args import protocol
-from lib.args import command_output
-from lib.args import verbose
-from lib.pyRouterLib import RouterLib
+from netlib.netlib.conn_type import SSH
+from netlib.netlib.conn_type import Telnet
+from netlib.netlib.user_creds import simple 
 
-import os
-import time
-import sys
 import logging
-
-access_params = ''
-
-
-def access(method):
-    global access_params
-    if method == 'ssh':
-        access_params = access_method.use_ssh(host, RouterLib.username,
-                                              RouterLib.password)
-    elif method == 'telnet':
-        access_params = access_method.use_telnet(host, RouterLib.username,
-                                                 RouterLib.password)
-    else:
-        access_params = ''
-        return """
-        You must use a proper connection method.
-        Currently telnet and ssh are supported.
-        """
-
-    return method, access_params
+import os
+import sys
 
 
 def log_debug(message):
@@ -40,103 +16,68 @@ def log_debug(message):
         logging.debug(message)
 
 
-def log_error(message):
-    logging.basicConfig(level=logging.ERROR)
-    logging.error(message)
+if __name__ == "__main__":
+    args = default_args()
+    verbose = args['verbose']
+    creds = simple()
 
-
-if __name__ == '__main__':
-    args = default_args(hosts_file, command_file, protocol, command_output,
-                        verbose)
-    hosts_file = args[0]
-    command_file = args[1]
-    protocol = args[2].lower()
-    command_output = args[3]
-    verbose = args[4]
-
-    if not os.path.isfile(hosts_file):
-        log_error(message=' Invalid Hosts File')
+    if not os.path.isfile(args['hosts_file']):
+        log_error(message=' Invalid Hosts File.')
         exit(1)
-    if not os.path.isfile(command_file):
-        log_error(message=' Invalid Commands File')
+    if not os.path.isfile(args['command_file']):
+        log_error(message=' Invalid Commands File.')
         exit(1)
-    access_method = RouterLib()
-    hosts = open(hosts_file, 'r')
-    log_debug(message=' Reading the hosts file.')
-    for host in hosts:
-        host = host.strip()
-        log_debug(message=' Reading %s from the hosts file.' % host)
-        """
-        Set up the connection using SSH (default) or Telnet.
-        """
-        if protocol == 'ssh':
-            log_debug(message=' Attempting to access %s via SSH.' % host)
-            try:
-                log_debug(message=' Establishing ssh connection to %s.' % host)
-                access(method='ssh')
-                access_cmd = access_params[-1]
-                access_shell = access_cmd.invoke_shell()
-                shell_output = access_shell.recv(1000)
-                if '>' in shell_output:
-                    log_debug(message=' Entering enable credentials')
-                    access_shell.send('enable\n')
-                    time.sleep(1)
-                    shell_output = access_shell.recv(1000)
-                    if 'Password:' in shell_output:
-                        access_shell.send(RouterLib.enable + '\n')
-                        time.sleep(1)
-                        shell_output = access_shell.recv(1000)
-                        if '#' in shell_output:
-                            log_debug(message=' Successfully entered enable mode.')
-                            access_shell.send('terminal length 0\n')
-                            shell_output = access_shell.recv(1000)
-                            log_debug(message=' Setting an unlimited terminal buffer.')
+
+    with open(args['hosts_file'], 'r') as hf:
+        for host in hf:
+            host = host.strip()
+            log_debug(message=' Reading %s from the host file.' % host)
+            if args['protocol'] == 'ssh':
+                try:
+                    log_debug(message=' Attempting to log into %s via SSH.' % host)
+                    access = SSH(host, creds['username'], creds['password'])
+                    access.connect()
+                except:
+                    log_debug(message=' Error connecting via SSH.')
+                    try:
+                        log_debug(message=' Attempting to log into %s via Telnet.' % host)
+                        access = Telnet(host, creds['username'], creds['password'])
+                        access.connect()
+                    except:
+                        log_debug(message= 'Unable to connect to %s' % host)
+                        exit(1)
+            elif args['protocol'] == 'telnet':
+                try:
+                    log_debug(message=' Attempting to log into %s via Telnet.' % host)
+                    access = Telnet(host, creds['username'], creds['password'])
+                    access.connect()
+                except:
+                    log_debug(message=' Erorr connecting via Telnet.')
+                    try:
+                        log_debug(message=' Attempting to log into %s via SSH.' % host)
+                        access = SSH(host, creds['username'], creds['password'])
+                        access.connect()
+                    except:
+                        log_debug(message= 'Unable to connect to %s' % host)
+                        exit(1)
+            else:
+               log_debug(message=' ERROR: Unknown connection type.')
+               exit(1)
+            access.set_enable(creds['enable'])
+            access.disable_paging()
+
+            with open(args['command_file'], 'r') as cf:
+                log_debug(message=' Reading the commands file.')
+                for command in cf:
+                    command = command.strip()
+                    log_debug(message=' Executing %s' % command)
+                    if args['command_output'] is True:
+                        print(access.command(command))
                     else:
-                        log_debug(message=' Unable to enter enable mode.')
-                elif '#' in shell_output:
-                    access_shell.send('terminal length 0\n')
-                    shell_output = access_shell.recv(1000)
-                    log_debug(message=' Setting an unlimited terminal buffer.')
-            except:
-                log_error(message=' SKIPPING: %s doesn\'t support SSH.' % host)
-                exit(1)
-        elif protocol == 'telnet':
-            log_debug(message=' Attempting to access %s via Telnet.' % host)
-            try:
-                log_debug(message=' Establishing telnet connection to %s.' % host)
-                access(method='telnet')
-                access_cmd = access_params[-1]
-            except:
-                log_error(message=' SKIPPING: %s doesn\'t support Telnet.' % host)
-                exit(1)
-        else:
-            access(method='none')
-        """
-        Run through the commands in the commands files.
-        """
-        cmds = open(command_file, 'r')
-        log_debug(message=' Reading the commands file.')
-        for command in cmds:
-            command = command.strip()
-            log_debug(message=' Executing: %s' % command)
-            if protocol == 'ssh':
-                access_shell.send(command + '\n')
-                time.sleep(2)
-                shell_output = access_shell.recv(1000000)
-                if command_output is True:
-                    print shell_output
-            if protocol == 'telnet':
-                access_cmd.write(command + '\n')
-                shell_output = access_cmd.read_until('#', 2)
-                log_debug(message=' Executing: %s' % command)
-                if command_output is True:
-                    print shell_output
-        """
-        Close the sessions and files.
-        """
-        access_cmd.close()
-        log_debug(message=' Closing connection to %s.' % host)
-        cmds.close()
-        log_debug(message=' Closing commands file.')
-    hosts.close()
-    log_debug(message=' Closing hosts file.')
+                        access.command(command)
+            log_debug(message=' Closing connection to %s.' % host)
+            access.close()
+            log_debug(message=' Closing the commands file.')
+            cf.close()
+        log_debug(message=' Closing the hosts file.')
+        hf.close() 
