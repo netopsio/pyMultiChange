@@ -6,7 +6,7 @@ It utilizes a python library called 'netlib' The latest version of 'netlib' can 
 https://github.com/jtdub/netlib
 
 Netlib is also included as a submodule and can be obtained via the git
-submodule commandso.
+submodule commands.
 
     git submodule init
     git submodule update
