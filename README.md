@@ -1,9 +1,19 @@
 pyMultiChange
 =============
 
-It utilizes the pyRouterLib. The latest version of pyRouterLib can be obtained at:
+It utilizes a python library called 'netlib' The latest version of 'netlib' can be obtained at:
 
-https://github.com/jtdub/pyRouterLib
+https://github.com/jtdub/netlib
+
+Netlib is also included as a submodule and can be obtained via the git
+submodule commands.
+
+    git submodule init
+    git submodule update
+    cd netlib
+    git pull
+
+    sudo pip install -r netlib/requirements.txt
 
 PyMultiChange is a script that allows you to make mass changes to cisco routers and switches.
 
