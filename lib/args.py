@@ -4,9 +4,11 @@ protocol = 'ssh'
 command_output = False
 verbose = False
 
+
 def default_args():
     global protocol, command_output, verbose
-    parser = argparse.ArgumentParser(description='Managing network devices with Python')
+    description = "Managing network devices with python"
+    parser = argparse.ArgumentParser(description=description)
     parser.add_argument('-d', '--hosts', help='Specifies a host file',
                         required=True)
     parser.add_argument('-c', '--commands',  help='Specifies a commands file',
@@ -15,7 +17,7 @@ def default_args():
                         nargs='?', const='ssh')
     parser.add_argument('-t', '--telnet', help='Use the Telnet protocol',
                         nargs='?', const='telnet')
-    parser.add_argument('-o', '--output', help='Be verbose with command output',
+    parser.add_argument('-o', '--output', help='Verbose command output',
                         nargs='?', const=True)
     parser.add_argument('-v', '--verbose', help='Debug script output',
                         nargs='?', const=True)

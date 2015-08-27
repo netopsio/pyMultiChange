@@ -3,7 +3,7 @@
 from lib.args import default_args
 from netlib.netlib.conn_type import SSH
 from netlib.netlib.conn_type import Telnet
-from netlib.netlib.user_creds import simple 
+from netlib.netlib.user_creds import simple
 
 import logging
 import os
@@ -29,40 +29,45 @@ if __name__ == "__main__":
         exit(1)
 
     with open(args['hosts_file'], 'r') as hf:
+        ssh_message = " Attempting to log into %s via SSH." % host
+        telnet_message = " Attempting to log into %s via Telnet." % host
+
         for host in hf:
             host = host.strip()
             log_debug(message=' Reading %s from the host file.' % host)
             if args['protocol'] == 'ssh':
                 try:
-                    log_debug(message=' Attempting to log into %s via SSH.' % host)
+                    log_debug(message=ssh_message)
                     access = SSH(host, creds['username'], creds['password'])
                     access.connect()
                 except:
                     log_debug(message=' Error connecting via SSH.')
                     try:
-                        log_debug(message=' Attempting to log into %s via Telnet.' % host)
-                        access = Telnet(host, creds['username'], creds['password'])
+                        log_debug(message=telnet_message)
+                        access = Telnet(host, creds['username'],
+                                        creds['password'])
                         access.connect()
                     except:
-                        log_debug(message= 'Unable to connect to %s' % host)
+                        log_debug(message=' Unable to connect to %s' % host)
                         exit(1)
             elif args['protocol'] == 'telnet':
                 try:
-                    log_debug(message=' Attempting to log into %s via Telnet.' % host)
+                    log_debug(telnet_message)
                     access = Telnet(host, creds['username'], creds['password'])
                     access.connect()
                 except:
                     log_debug(message=' Erorr connecting via Telnet.')
                     try:
-                        log_debug(message=' Attempting to log into %s via SSH.' % host)
-                        access = SSH(host, creds['username'], creds['password'])
+                        log_debug(message=telnet_message)
+                        access = SSH(host, creds['username'],
+                                     creds['password'])
                         access.connect()
                     except:
-                        log_debug(message= 'Unable to connect to %s' % host)
+                        log_debug(message=' Unable to connect to %s' % host)
                         exit(1)
             else:
-               log_debug(message=' ERROR: Unknown connection type.')
-               exit(1)
+                log_debug(message=' ERROR: Unknown connection type.')
+                exit(1)
             access.set_enable(creds['enable'])
             access.disable_paging()
 
@@ -80,4 +85,4 @@ if __name__ == "__main__":
             log_debug(message=' Closing the commands file.')
             cf.close()
         log_debug(message=' Closing the hosts file.')
-        hf.close() 
+        hf.close()

@@ -13,6 +13,8 @@ submodule commandso.
     cd netlib
     git pull
 
+    sudo pip install -r netlib/requirements.txt
+
 PyMultiChange is a script that allows you to make mass changes to cisco routers and switches.
 
 ## multi.py
