@@ -9,7 +9,7 @@ def default_args():
     global protocol, command_output, verbose
     description = "Managing network devices with python"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-d', '--hosts', help='Specifies a host file',
+    parser.add_argument('-d', '--devices', help='Specifies a host file',
                         required=True)
     parser.add_argument('-c', '--commands',  help='Specifies a commands file',
                         required=True)
@@ -21,22 +21,17 @@ def default_args():
                         nargs='?', const=True)
     parser.add_argument('-v', '--verbose', help='Debug script output',
                         nargs='?', const=True)
+    parser.add_argument('--delay',
+                        help='Change the default delay exec between commands',
+                        default='2')
+    parser.add_argument('--buffer',
+                        help='Change the default SSH output buffer',
+                        default='8192')
+    parser.add_argument('--threaded',
+                        help='Enable process threading',
+                        nargs='?', const=True)
+    parser.add_argument('-m', '--maxthreads',
+                        help='Define the maximum number of threads',
+                        default='10')
 
-    args = vars(parser.parse_args())
-
-    if args['hosts']:
-        hosts_file = args['hosts']
-    if args['commands']:
-        command_file = args['commands']
-    if args['telnet']:
-        protocol = 'telnet'
-    if args['ssh']:
-        protocol = 'ssh'
-    if args['output']:
-        command_output = args['output']
-    if args['verbose']:
-        verbose = args['verbose']
-
-    return {'hosts_file': hosts_file, 'command_file': command_file,
-            'protocol': protocol, 'command_output': command_output,
-            'verbose': verbose}
+    return vars(parser.parse_args())
