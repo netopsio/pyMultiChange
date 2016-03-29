@@ -20,15 +20,16 @@ PyMultiChange is a script that allows you to make mass changes to cisco routers 
 ## multi.py
 
 ```
-usage: multi.py [-h] [-d HOSTS] -c COMMANDS [-s [SSH]] [-t [TELNET]]
-                [-o [OUTPUT]] [-v [VERBOSE]]
+usage: multi.py [-h] -d DEVICES -c COMMANDS [-s [SSH]] [-t [TELNET]]
+                [-o [OUTPUT]] [-v [VERBOSE]] [--delay DELAY] [--buffer BUFFER]
+                [--threaded [THREADED]] [-m MAXTHREADS]
 
-Managing Cisco routers/switches with Python
+Managing network devices with python
 
 optional arguments:
   -h, --help            show this help message and exit
   -d DEVICES, --devices DEVICES
-                        Specifies a device file
+                        Specifies a host file
   -c COMMANDS, --commands COMMANDS
                         Specifies a commands file
   -s [SSH], --ssh [SSH]
@@ -36,7 +37,13 @@ optional arguments:
   -t [TELNET], --telnet [TELNET]
                         Use the Telnet protocol
   -o [OUTPUT], --output [OUTPUT]
-                        Be verbose with command output
+                        Verbose command output
   -v [VERBOSE], --verbose [VERBOSE]
                         Debug script output
+  --delay DELAY         Change the default delay exec between commands
+  --buffer BUFFER       Change the default SSH output buffer
+  --threaded [THREADED]
+                        Enable process threading
+  -m MAXTHREADS, --maxthreads MAXTHREADS
+                        Define the maximum number of threads
 ```

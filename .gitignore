@@ -1,3 +1,5 @@
 *.pyc
 build/*
 *-old.py*
+commands.txt
+hosts.txt
