@@ -34,32 +34,4 @@ def default_args():
                         help='Define the maximum number of threads',
                         default='10')
 
-    args = vars(parser.parse_args())
-
-    if args['devices']:
-        hosts_file = args['devices']
-    if args['commands']:
-        command_file = args['commands']
-    if args['telnet']:
-        protocol = 'telnet'
-    if args['ssh']:
-        protocol = 'ssh'
-    if args['output']:
-        command_output = args['output']
-    if args['verbose']:
-        verbose = args['verbose']
-    if args['delay']:
-        delay = int(args['delay'])
-    if args['buffer']:
-        buffers = int(args['buffer'])
-    if args['threaded']:
-        threaded = args['threaded']
-    else:
-        threaded = False
-    if args['maxthreads']:
-        maxthreads = int(args['maxthreads'])
-
-    return {'hosts_file': hosts_file, 'command_file': command_file,
-            'protocol': protocol, 'command_output': command_output,
-            'verbose': verbose, 'delay': delay, 'buffer': buffers,
-            'threaded': threaded, 'maxthreads': maxthreads}
+    return vars(parser.parse_args())

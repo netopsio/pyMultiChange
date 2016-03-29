@@ -119,14 +119,19 @@ if __name__ == "__main__":
     verbose = args['verbose']
     creds = simple()
 
-    if not os.path.isfile(args['hosts_file']):
+    if not os.path.isfile(args['devices']):
         log_error(message=' Invalid Hosts File.')
         exit(1)
-    if not os.path.isfile(args['command_file']):
+    if not os.path.isfile(args['commands']):
         log_error(message=' Invalid Commands File.')
         exit(1)
 
-    with open(args['hosts_file'], 'r') as hf:
+    if args['telnet']:
+        args['protocol'] = 'telnet'
+    else:
+        args['protocol'] = 'ssh'
+
+    with open(args['devices'], 'r') as hf:
         hosts = hf.readlines()
 
     host_settings = list()
@@ -137,10 +142,10 @@ if __name__ == "__main__":
         settings['username'] = creds['username']
         settings['password'] = creds['password']
         settings['enable_password'] = creds['enable']
-        settings['delay'] = args['delay']
-        settings['buffer'] = args['buffer']
-        settings['commands'] = args['command_file']
-        settings['command_output'] = args['command_output']
+        settings['delay'] = int(args['delay'])
+        settings['buffer'] = int(args['buffer'])
+        settings['commands'] = args['commands']
+        settings['command_output'] = args['output']
         host_settings.append(settings)
 
     if not args['threaded']:
@@ -151,7 +156,7 @@ if __name__ == "__main__":
             device_queue = Queue.Queue()
             threads = list()
 
-            for num in range(args['maxthreads']):
+            for num in range(int(args['maxthreads'])):
                 thread = threading.Thread(
                     target=connection_queue,
                     args=[device_queue])
