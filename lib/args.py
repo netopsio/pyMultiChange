@@ -54,6 +54,8 @@ def default_args():
         buffers = int(args['buffer'])
     if args['threaded']:
         threaded = args['threaded']
+    else:
+        threaded = False
     if args['maxthreads']:
         maxthreads = int(args['maxthreads'])
 

@@ -57,7 +57,13 @@ def device_connection(device_settings):
             except:
                 log_debug(
                     message=' Unable to connect to {}.'.format(device_name))
-                exit(1)
+                if os.path.isfile('failure.log'):
+                    with open('failure.log', 'a') as f:
+                        f.write('{}\n'.format(device_name))
+                else:
+                    with open('failure.log', 'w') as f:
+                        f.write('{}\n'.format(device_name))
+                pass
     elif protocol == 'telnet':
         try:
             log_debug(message=telnet_message)
@@ -71,7 +77,13 @@ def device_connection(device_settings):
             except:
                 log_debug(
                     message=' Unable to connect to {}.'.format(device_name))
-                exit(1)
+                if os.path.isfile('failure.log'):
+                    with open('failure.log', 'a') as f:
+                        f.write('{}\n'.format(device_name))
+                else:
+                    with open('failure.log', 'w') as f:
+                        f.write('{}\n'.format(device_name))
+                pass
     else:
         log_debug(message=' Unknown protocol type')
         exit(1)
