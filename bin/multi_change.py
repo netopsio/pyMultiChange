@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-from netlib.conn_type import SSH
-from netlib.conn_type import Telnet
-from netlib.user_creds import simple
+from netlib import conn_type
+from netlib import user_creds
 
 import argparse
 import logging
@@ -72,13 +71,13 @@ def device_connection(device_settings):
     telnet_message = " Attempting to log into {} via Telnet.".format(
         device_name)
 
-    ssh_conn = SSH(device_name=device_name,
+    ssh_conn = conn_type.SSH(device_name=device_name,
                    username=username,
                    password=password,
                    delay=delay,
                    buffer=buffer)
 
-    telnet_conn = Telnet(device_name=device_name,
+    telnet_conn = conn_type.Telnet(device_name=device_name,
                          username=username,
                          password=password,
                          delay=delay)
@@ -148,7 +147,7 @@ def connection_queue(queued_device):
 if __name__ == "__main__":
     args = default_args()
     verbose = args['verbose']
-    creds = simple()
+    creds = user_creds.simple()
 
     if not os.path.isfile(args['devices']):
         log_error(message=' Invalid Hosts File.')
