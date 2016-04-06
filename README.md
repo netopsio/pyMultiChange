@@ -7,23 +7,20 @@ https://github.com/jtdub/netlib
 
 ## Install
 
-Note: You may be required to install the netlib package separate. I'm working on that.
-git clone git@github.com:jtdub/netlib.git
-cd netlib
-sudo python setup.py install
-
+```
 git clone git@github.com:jtdub/pyMultiChange.git
 cd pyMultiChange
 sudo python setup.py install
+```
 
 PyMultiChange is a script that allows you to make mass changes to cisco routers and switches.
 
 ## multi_change.py
 
 ```
-usage: multi.py [-h] -d DEVICES -c COMMANDS [-s [SSH]] [-t [TELNET]]
-                [-o [OUTPUT]] [-v [VERBOSE]] [--delay DELAY] [--buffer BUFFER]
-                [--threaded [THREADED]] [-m MAXTHREADS]
+usage: multi_change.py [-h] -d DEVICES -c COMMANDS [-s [SSH]] [-t [TELNET]]
+                       [-o [OUTPUT]] [-v [VERBOSE]] [--delay DELAY] [--buffer BUFFER]
+                       [--threaded [THREADED]] [-m MAXTHREADS]
 
 Managing network devices with python
 
