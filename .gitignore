@@ -1,5 +1,7 @@
 *.pyc
 build/*
+dist/*
+*.egg-info
 *-old.py*
 commands.txt
 hosts.txt

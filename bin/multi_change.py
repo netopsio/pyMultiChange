@@ -1,15 +1,46 @@
 #!/usr/bin/env python
 
-from lib.args import default_args
-from netlib.netlib.conn_type import SSH
-from netlib.netlib.conn_type import Telnet
-from netlib.netlib.user_creds import simple
+from netlib.conn_type import SSH
+from netlib.conn_type import Telnet
+from netlib import user_creds
 
+import argparse
 import logging
 import os
 import sys
 import threading
 import Queue
+
+
+def default_args():
+    description = "Managing network devices with python"
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('-d', '--devices', help='Specifies a host file',
+                        required=True)
+    parser.add_argument('-c', '--commands',  help='Specifies a commands file',
+                        required=True)
+    parser.add_argument('-s', '--ssh', help='Default: Use the SSH protocol',
+                        nargs='?', const='ssh')
+    parser.add_argument('-t', '--telnet', help='Use the Telnet protocol',
+                        nargs='?', const='telnet')
+    parser.add_argument('-o', '--output', help='Verbose command output',
+                        nargs='?', const=True)
+    parser.add_argument('-v', '--verbose', help='Debug script output',
+                        nargs='?', const=True)
+    parser.add_argument('--delay',
+                        help='Change the default delay exec between commands',
+                        default='2')
+    parser.add_argument('--buffer',
+                        help='Change the default SSH output buffer',
+                        default='8192')
+    parser.add_argument('--threaded',
+                        help='Enable process threading',
+                        nargs='?', const=True)
+    parser.add_argument('-m', '--maxthreads',
+                        help='Define the maximum number of threads',
+                        default='10')
+
+    return vars(parser.parse_args())
 
 
 def log_debug(message):
@@ -117,7 +148,7 @@ def connection_queue(queued_device):
 if __name__ == "__main__":
     args = default_args()
     verbose = args['verbose']
-    creds = simple()
+    creds = user_creds.simple()
 
     if not os.path.isfile(args['devices']):
         log_error(message=' Invalid Hosts File.')
