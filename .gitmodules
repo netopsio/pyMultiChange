@@ -1,3 +1,0 @@
-[submodule "netlib"]
-	path = netlib
-	url = git@github.com:jtdub/netlib.git
