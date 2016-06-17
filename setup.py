@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='pymulti_change',
-      version='0.5',
+      version='0.6',
       description='A script to make mass changes to routers and switches.',
       author='James Williams',
       url='https://github.com/jtdub/pyMultiChange',
