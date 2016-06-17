@@ -121,15 +121,12 @@ def device_connection(device_settings):
     access.set_enable(enable_password)
     access.disable_paging()
 
-    with open(commands, 'r') as cmd_file:
-        log_debug(message=' Reading the commands file.')
-        for command in cmd_file:
-            command = command.strip()
-            log_debug(message=' Executing {}'.format(command))
-            if command_output:
-                print(access.command(command))
-            else:
-                access.command(command)
+    for command in commands:
+        log_debug(message=' Executing {}'.format(command))
+        if command_output:
+            print(access.command(command))
+        else:
+            access.command(command)
 
     log_debug(message=' Closing the connection to {}'.format(device_name))
     access.close()
@@ -163,7 +160,15 @@ if __name__ == "__main__":
         args['protocol'] = 'ssh'
 
     with open(args['devices'], 'r') as hf:
+        log_debug(message='Populating hosts')
         hosts = hf.readlines()
+
+    commands = list()
+
+    with open(args['commands'], 'r') as cf:
+        log_debug(message='Populating commands')
+        for cmd in cf:
+            commands.append(cmd.rstrip())
 
     host_settings = list()
     for host in hosts:
@@ -175,7 +180,7 @@ if __name__ == "__main__":
         settings['enable_password'] = creds['enable']
         settings['delay'] = int(args['delay'])
         settings['buffer'] = int(args['buffer'])
-        settings['commands'] = args['commands']
+        settings['commands'] = commands
         settings['command_output'] = args['output']
         host_settings.append(settings)
 
