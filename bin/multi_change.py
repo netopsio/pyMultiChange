@@ -2,7 +2,7 @@
 
 from netlib.conn_type import SSH
 from netlib.conn_type import Telnet
-from netlib import user_creds
+from netlib.user_keyring import KeyRing
 
 import argparse
 import logging
@@ -15,10 +15,16 @@ import Queue
 def default_args():
     description = "Managing network devices with python"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-d', '--devices', help='Specifies a host file',
+    parser.add_argument('-u', '--username', help='Specify your username.',
                         required=True)
-    parser.add_argument('-c', '--commands',  help='Specifies a commands file',
-                        required=True)
+    parser.add_argument('--delete-creds',
+                        help='Delete credentials from keyring.',
+                        nargs='?', const=True)
+    parser.add_argument('--set-creds',
+                        help='set keyring credentials.',
+                        nargs='?', const=True)
+    parser.add_argument('-d', '--devices', help='Specifies a host file')
+    parser.add_argument('-c', '--commands',  help='Specifies a commands file')
     parser.add_argument('-s', '--ssh', help='Default: Use the SSH protocol',
                         nargs='?', const='ssh')
     parser.add_argument('-t', '--telnet', help='Use the Telnet protocol',
@@ -90,15 +96,8 @@ def device_connection(device_settings):
             access.connect()
         except:
             log_debug(message=' Error connecting via {}'.format(protocol))
-            try:
-                log_debug(message=telnet_message)
-                access = telnet_conn
-                access.connect()
-            except:
-                log_debug(
-                    message=' Unable to connect to {}.'.format(device_name))
-                log_failure(device_name)
-                pass
+            log_failure(device_name)
+            pass
     elif protocol == 'telnet':
         try:
             log_debug(message=telnet_message)
@@ -106,14 +105,8 @@ def device_connection(device_settings):
             access.connect()
         except:
             log_debug(message=' Error connecting via {}'.format(protocol))
-            try:
-                access = ssh_conn
-                access.connect()
-            except:
-                log_debug(
-                    message=' Unable to connect to {}.'.format(device_name))
-                log_failure(device_name)
-                pass
+            log_failure(device_name)
+            pass
     else:
         log_debug(message=' Unknown protocol type')
         exit(1)
@@ -145,44 +138,59 @@ def connection_queue(queued_device):
 if __name__ == "__main__":
     args = default_args()
     verbose = args['verbose']
-    creds = user_creds.simple()
+    user_keys = KeyRing(username=args['username'])
+    log_debug(message='Obtaining credentails from keyring.')
+    creds = user_keys.get_creds()
 
-    if not os.path.isfile(args['devices']):
-        log_error(message=' Invalid Hosts File.')
-        exit(1)
-    if not os.path.isfile(args['commands']):
-        log_error(message=' Invalid Commands File.')
-        exit(1)
+    if args['set_creds'] is not None:
+        log_debug(message='Setting credentails in keyring.')
+        user_keys.set_creds()
+        creds = user_keys.get_creds()
+
+    if args['delete_creds'] is not None:
+        log_debug(message='Deleting credentials in keyring.')
+        user_keys.del_creds()
+
+    if args['devices'] is not None:
+        if not os.path.isfile(args['devices']):
+            log_error(message=' Invalid Hosts File.')
+            exit(1)
+        with open(args['devices'], 'r') as hf:
+            log_debug(message='Populating hosts')
+            hosts = hf.readlines()
+    if args['commands'] is not None:
+        if not os.path.isfile(args['commands']):
+            log_error(message=' Invalid Commands File.')
+            exit(1)
+        commands = list()
+        with open(args['commands'], 'r') as cf:
+            log_debug(message='Populating commands')
+            for cmd in cf:
+                commands.append(cmd.rstrip())
 
     if args['telnet']:
         args['protocol'] = 'telnet'
     else:
         args['protocol'] = 'ssh'
 
-    with open(args['devices'], 'r') as hf:
-        log_debug(message='Populating hosts')
-        hosts = hf.readlines()
-
-    commands = list()
-
-    with open(args['commands'], 'r') as cf:
-        log_debug(message='Populating commands')
-        for cmd in cf:
-            commands.append(cmd.rstrip())
-
-    host_settings = list()
-    for host in hosts:
-        settings = dict()
-        settings['device_name'] = host.strip()
-        settings['protocol'] = args['protocol']
-        settings['username'] = creds['username']
-        settings['password'] = creds['password']
-        settings['enable_password'] = creds['enable']
-        settings['delay'] = int(args['delay'])
-        settings['buffer'] = int(args['buffer'])
-        settings['commands'] = commands
-        settings['command_output'] = args['output']
-        host_settings.append(settings)
+    try:
+        host_settings = list()
+        for host in hosts:
+            settings = dict()
+            settings['device_name'] = host.strip()
+            settings['protocol'] = args['protocol']
+            settings['username'] = creds['username']
+            settings['password'] = creds['password']
+            settings['enable_password'] = creds['enable']
+            settings['delay'] = int(args['delay'])
+            settings['buffer'] = int(args['buffer'])
+            settings['commands'] = commands
+            settings['command_output'] = args['output']
+            host_settings.append(settings)
+    except NameError:
+        pass
+    except:
+        raise
 
     if not args['threaded']:
         for host in host_settings:
