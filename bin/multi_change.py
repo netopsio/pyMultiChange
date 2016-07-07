@@ -205,7 +205,7 @@ if __name__ == "__main__":
             device_connection(host)
     else:
         try:
-            device_queue = queue.queue()
+            device_queue = queue.Queue()
             threads = list()
 
             for num in range(int(args['maxthreads'])):
