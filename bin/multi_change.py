@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from netlib.conn_type import SSH
 from netlib.conn_type import Telnet
 from netlib.user_keyring import KeyRing
@@ -9,7 +14,10 @@ import logging
 import os
 import sys
 import threading
-import Queue
+try:
+    import Queue as queue
+except ImportError:
+    import queue
 
 
 def default_args():
@@ -106,7 +114,7 @@ def device_connection(device_settings):
         except:
             log_debug(message=' Error connecting via {}'.format(protocol))
             log_failure(device_name)
-            pass
+            raise
     else:
         log_debug(message=' Unknown protocol type')
         exit(1)
@@ -129,7 +137,7 @@ def connection_queue(queued_device):
     while True:
         try:
             device_settings = device_queue.get(timeout=5)
-        except Queue.Empty, ex:
+        except queue.Empty as ex:
             break
         device_connection(device_settings)
         device_queue.task_done()
@@ -197,7 +205,7 @@ if __name__ == "__main__":
             device_connection(host)
     else:
         try:
-            device_queue = Queue.Queue()
+            device_queue = queue.queue()
             threads = list()
 
             for num in range(int(args['maxthreads'])):
