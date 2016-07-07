@@ -7,6 +7,6 @@ setup(name='pymulti_change',
       description='A script to make mass changes to routers and switches.',
       author='James Williams',
       url='https://github.com/jtdub/pyMultiChange',
-      dependency_links = ['https://github.com/jtdub/netlib/tarball/master#egg=netlib-0.0.6'],
+      dependency_links = ['https://github.com/jtdub/netlib/tarball/master#egg=netlib-0.0.7'],
       install_requires = ['netlib'],
       scripts=['bin/multi_change.py'])

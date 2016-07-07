@@ -8,4 +8,4 @@ python:
 - "nightly"
 sudo: required
 install: "python setup.py install"
-script: nosettests
+script: nosetests
