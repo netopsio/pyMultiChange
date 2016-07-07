@@ -1,6 +1,8 @@
 pyMultiChange
 =============
 
+[![Build Status](https://travis-ci.org/jtdub/pyMultiChange.svg)](https://travis-ci.org/jtdub/pyMultiChange)
+
 It utilizes a python library called 'netlib' The latest version of 'netlib' can be obtained at:
 
 https://github.com/jtdub/netlib
