@@ -9,6 +9,20 @@ https://github.com/netopsio/netlib
 
 ## Install
 
+Netlib requires a couple packages be installed, as a requirement of its SNMP functionality.
+
+### Redhat based Linux distributions
+
+```
+sudo yum install net-snmp-devel gcc python-devel
+```
+
+### Debian based Linux distributions
+
+```
+sudo apt-get install libsnmp-dev snmp-mibs-downloader gcc python-dev
+```
+
 ```
 git clone git@github.com:jtdub/pyMultiChange.git
 cd pyMultiChange
