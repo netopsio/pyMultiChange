@@ -133,14 +133,14 @@ def device_connection(device_settings):
     access.close()
 
 
-def connection_queue(queued_device):
+def connection_queue(devices_queue):
     while True:
         try:
-            device_settings = device_queue.get(timeout=5)
+            device_settings = devices_queue.get(timeout=5)
         except queue.Empty as ex:
             break
         device_connection(device_settings)
-        device_queue.task_done()
+        devices_queue.task_done()
 
 
 if __name__ == "__main__":
@@ -208,15 +208,15 @@ if __name__ == "__main__":
             device_queue = queue.Queue()
             threads = list()
 
+            for host in host_settings:
+                device_queue.put(host)
+
             for num in range(int(args['maxthreads'])):
                 thread = threading.Thread(
                     target=connection_queue,
                     args=[device_queue])
                 thread.start()
                 threads.append(thread)
-
-            for host in host_settings:
-                device_queue.put(host)
 
             for t in threads:
                 t.join()
