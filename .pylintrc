@@ -1,0 +1,46 @@
+[MASTER]
+ignore=CVS,.git,__pycache__,.venv,venv
+ignore-patterns=test_.*?py
+jobs=0
+persistent=yes
+unsafe-load-any-extension=no
+
+[MESSAGES CONTROL]
+disable=
+    C0111,  # missing-docstring
+    C0103,  # invalid-name
+    R0913,  # too-many-arguments
+    R0801,  # duplicate-code
+    W0511,  # fixme
+
+[REPORTS]
+output-format=colorized
+reports=no
+score=yes
+
+[REFACTORING]
+max-nested-blocks=5
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,f,e
+
+[FORMAT]
+max-line-length=100
+indent-string='    '
+
+[DESIGN]
+max-args=10
+max-attributes=10
+max-branches=15
+max-locals=20
+max-parents=7
+max-public-methods=20
+max-returns=6
+max-statements=50
+min-public-methods=0
+
+[IMPORTS]
+allow-wildcard-with-all=no
+
+[EXCEPTIONS]
+overgeneral-exceptions=builtins.Exception
