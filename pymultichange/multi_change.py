@@ -13,6 +13,7 @@ from netlib.user_keyring import KeyRing
 
 from pymultichange.models import Arguments, Credentials, DeviceSettings, Protocol
 
+
 logger = logging.getLogger(__name__)
 
 
