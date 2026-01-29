@@ -7,7 +7,6 @@ import queue
 import sys
 import threading
 from pathlib import Path
-from typing import NoReturn, Optional
 
 from netlib.conn_type import SSH, Telnet
 from netlib.user_keyring import KeyRing
